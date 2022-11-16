@@ -1,3 +1,3 @@
-## Brother' Keeper Dao
+## Brother's Keeper Dao
 
-# A gathering of like minded people enriching one another
+# A gathering of like minded people enriching each others lives
