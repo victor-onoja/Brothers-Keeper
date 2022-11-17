@@ -1,0 +1,4 @@
+\.venv310
+.env
+\.vscode
+__pycache__
