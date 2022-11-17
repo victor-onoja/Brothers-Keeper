@@ -24,6 +24,10 @@ contract BrothersKeeperNFT is ERC721Votes, Ownable {
         return _baseURIstring;
     }
 
+    function setBaseUri(string newUri) external onlyOwner() {
+        _baseURIstring = newUri
+    }
+
     function mint() public payable {
         require(msg.value >= tokenPrice * 1 ether, "Insufficient funds to mint Token");
         _mint(msg.sender, tokenId);
@@ -44,19 +48,6 @@ contract BrothersKeeperNFT is ERC721Votes, Ownable {
     function sendCoin(address payable recipient, uint amount) external onlyOwner() {
         require(address(this).balance >= amount, "Insufficient funds");
         _sendCoin(recipient,amount);
-    }
-
-    function _sendToken(address tokenAdd, address reciepient, uint amount) private {
-        IERC20(tokenAdd).transfer(reciepient, amount);
-        emit transferSent(tokenAdd, reciepient);
-    }
-    function sendToken(address tokenAdd, address reciepient,uint amount) external onlyOwner() {
-        require(IERC20(tokenAdd).balanceOf(address(this)) >= amount,"Insufficient Funds");
-        _sendToken(tokenAdd,reciepient,amount);
-    }
-
-    function setBaseUri(string newUri) external onlyOwner() {
-        _baseURIstring = newUri
     }
 
 }

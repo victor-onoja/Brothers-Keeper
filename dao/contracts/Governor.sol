@@ -17,12 +17,13 @@ import "../interfaces/ITablelandController.sol";
 import "../interfaces/IBrothersKeeperNFT.sol";
 
 
-contract BrothersKeeperGovenor is 
+contract BrothersKeeperGovenor is
     ERC721Holder {
 
     uint8 constant reward = 20;
     uint256 private _proposalId;
     ITablelandTables private _tableland;
+    IBrothersKeeperNFT private _brothersKeeperNFT;
 
     enum VoteType {
         For,
@@ -49,8 +50,9 @@ contract BrothersKeeperGovenor is
     mapping (address => uint8) private _reputation;
 
 
-    constructor (address registry) {
+    constructor (address registry, address token) {
         _tableland = ITablelandTables(registry);
+        _brothersKeeperNFT = IBrothersKeeperNFT(token);
     }
 
     function propose(
@@ -79,10 +81,6 @@ contract BrothersKeeperGovenor is
     ) internal override returns (uint256) {}
 
     function _create() private {
-
-    }
-
-    function create() external onlyGovernance() {
 
     }
 
