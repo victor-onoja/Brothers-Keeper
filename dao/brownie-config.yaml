@@ -1,0 +1,9 @@
+dotenv : .env
+dependencies: 
+    - OpenZeppelin/openzeppelin-contracts@4.8.0
+wallets : 
+  beacon: ${BEACON}
+compiler:
+  solc:
+    remappings:
+      - "@openzeppelin4.8.0=OpenZeppelin/openzeppelin-contracts@4.8.0"
