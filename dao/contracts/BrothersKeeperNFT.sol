@@ -5,9 +5,20 @@ pragma solidity ^0.8.12;
 
 import "@openzeppelin4.8.0/contracts/token/ERC721/extensions/ERC721Votes.sol";
 import "@openzeppelin4.8.0/contracts/access/Ownable.sol";
+import "../interfaces/IBrothersKeeperNFT.sol";
 
 
-contract BrothersKeeperNFT is ERC721Votes, Ownable {
+contract BrothersKeeperNFT is 
+    IBrothersKeeperNFT,
+    ERC721Votes,
+    Ownable 
+    {
+    
+    event transferSent (
+        address sender,
+        address reciepient
+    );
+
     uint private tokenId;
     string private _baseURIstring;
     uint256 private immutable tokenPrice;
@@ -15,8 +26,8 @@ contract BrothersKeeperNFT is ERC721Votes, Ownable {
 
     constructor (uint256 _tokenPrice)
         ERC721 ("BrothersKeeperNFT", "BK")
-        EIP712("BrothersKeeperNFT", "1") {
-
+        EIP712("BrothersKeeperNFT", "1") 
+    {
         tokenPrice = _tokenPrice;
     }
 
@@ -24,7 +35,7 @@ contract BrothersKeeperNFT is ERC721Votes, Ownable {
         return _baseURIstring;
     }
 
-    function setBaseUri(string newUri) external onlyOwner() {
+    function setBaseUri(string calldata newUri) external onlyOwner() {
         _baseURIstring = newUri;
     }
 

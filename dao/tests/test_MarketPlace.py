@@ -2,23 +2,29 @@ import pytest
 from brownie import accounts
 
 
-@pytest.fixture
-def deployERC721Token():
+@pytest.fixture()
+def ERC721Token():
     pass
 
 
-@pytest.fixture
-def mintERC721Token():
+def mint_721(ERC721Token):
+    pass
+
+@pytest.fixture()
+def ERC20Token():
     pass
 
 
-@pytest.fixture
-def deployERC20Token():
+def mint_20(ERC20Token):
     pass
 
 
-@pytest.fixture
-def deployContract():
+@pytest.fixture()
+def MarketPlace():
+    pass
+
+@pytest.fixture()
+def TestTableLand():
     pass
 
 

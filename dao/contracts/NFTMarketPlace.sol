@@ -15,7 +15,7 @@ contract MarketPlace is ERC721Holder, Ownable {
 
     event Listed (
         address seller,
-        uint listingId
+        uint listingId,
         address token,
         uint tokenId,
         uint price
@@ -23,7 +23,7 @@ contract MarketPlace is ERC721Holder, Ownable {
 
     event Sold (
         address buyer,
-        uint listingId
+        uint listingId,
         address token,
         uint tokenId,
         uint price
@@ -31,9 +31,14 @@ contract MarketPlace is ERC721Holder, Ownable {
 
     event Cancelled (
         address seller,
-        uint listingId
+        uint listingId,
         address token,
         uint tokenId
+    );
+
+    event transferSent (
+        address sender,
+        address reciepient
     );
 
     enum ListingStatus {
@@ -60,10 +65,10 @@ contract MarketPlace is ERC721Holder, Ownable {
 
     mapping (uint => Listing) private _listings;
 
-    constructor (uint8 fee, string prefix, address registry) {
+    constructor (uint8 fee, string memory prefix, address registry) {
         _feeNumerator = fee;
         _prefix = prefix;
-        _tableland = ITablelandTables(registry)
+        _tableland = ITablelandTables(registry);
         _tableId = _tableland.createTable(
             address(this),
             string.concat(
@@ -83,7 +88,7 @@ contract MarketPlace is ERC721Holder, Ownable {
 
     function listToken(address token, uint tokenId, uint price) external {
         
-        _sendERC721Token(tokenAdd, msg.sender, reciepient, amount);
+        _sendERC721Token(token, msg.sender, address(this), tokenId);
         Listing memory listing = Listing(
             ListingStatus.Active,
             msg.sender,
@@ -102,13 +107,14 @@ contract MarketPlace is ERC721Holder, Ownable {
             ));
 
         _listingId ++;
-        emit Listed (msg.sender, listing.listingId, token, tokenId, price)
+        emit Listed (msg.sender, listing.listingId, token, tokenId, price);
 
     }
 
     function cancelListing(uint listingId) private {
-        Listing memory listing = _listings[listingid];
+        Listing memory listing = _listings[listingId];
 
+        require();
         require(msg.sender != listing.seller,
             "Only seller can cancel listing");
         require(listing.status == ListingStatus.Cancelled, 
@@ -130,12 +136,13 @@ contract MarketPlace is ERC721Holder, Ownable {
         emit Cancelled (listing.seller,
                         listing.listingId,
                         listing.token,
-                        listing.tokenId)
+                        listing.tokenId);
     }
 
     function buyToken(uint listingId) external payable {
         
-        Listing memory listing = _listings[listingid];
+        Listing memory listing = _listings[listingId];
+        require();
         require(msg.sender != listing.seller, "seller cannot be Buyer");
         require(listing.status == ListingStatus.Active, 
             "Listing is not Active");
@@ -146,8 +153,9 @@ contract MarketPlace is ERC721Holder, Ownable {
                          listing.tokenId);
 
         uint feeCollected = _feeNumerator * listing.price / _feeDenominator;
-        _sendCoin(listing.seller, listing.price - feeCollected);
+        _sendCoin(payable(listing.seller), listing.price - feeCollected);
 
+        delete(_listings[listingId]);
         _run(
             address(this),
             _tableId,
@@ -155,10 +163,9 @@ contract MarketPlace is ERC721Holder, Ownable {
 
             ));
 
-        delete(_listings[listingId]);
         emit Sold (
             msg.sender,
-            listing.listingId
+            listing.listingId,
             listing.token,
             listing.tokenId,
             listing.price
@@ -169,7 +176,7 @@ contract MarketPlace is ERC721Holder, Ownable {
         _tableId = tableId;
     }
 
-    function setPrefix(string prefix) external onlyOwner() {
+    function setPrefix(string calldata prefix) external onlyOwner() {
         _prefix = prefix;
     }
 
@@ -189,10 +196,10 @@ contract MarketPlace is ERC721Holder, Ownable {
         emit transferSent(tokenAdd, reciepient);
     }
     function sendERC20Token(
-        address tokenAdd, address reciepient,uint amount) external onlyOwner() {
+        address tokenAdd, address reciepient, uint amount) external onlyOwner() {
         require(IERC20(tokenAdd).balanceOf(address(this)) >= amount,
             "Insufficient Funds");
-        _sendToken(tokenAdd,reciepient,amount);
+        _sendERC20Token(tokenAdd,reciepient,amount);
     }
 
     function _sendERC721Token(
@@ -210,13 +217,10 @@ contract MarketPlace is ERC721Holder, Ownable {
         address reciepient,
         uint tokenId) external onlyOwner() {
             
-        require(IERC721(tokenAdd).ownerOf(tokenId) = sender,
-            "MarketPlace doesnt own token");
         _sendERC721Token(tokenAdd, sender, reciepient, tokenId);
     }
 
     receive() external payable {
-
     }
 
 }
