@@ -1,5 +1,7 @@
 import 'package:brothers_keeper/core/constants/colors.dart';
 import 'package:brothers_keeper/core/constants/widgets/button.dart';
+import 'package:brothers_keeper/features/home/views/home.dart';
+import 'package:brothers_keeper/features/marketplace/views/marketplace.dart';
 import 'package:brothers_keeper/features/onboard/viewsattach/popup_t.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -70,7 +72,13 @@ class _OnboardScreenState extends State<OnboardScreen> {
                                         isHover9 = val;
                                       });
                                     },
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const MarketPlace()));
+                                    },
                                     text: 'Market Place',
                                     icon: Icon(
                                       Icons.store_mall_directory,
@@ -420,7 +428,13 @@ class _OnboardScreenState extends State<OnboardScreen> {
                                             isHover = val;
                                           });
                                         },
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const HomePge()));
+                                        },
                                         text: 'MINT',
                                         icon: Icon(
                                           Icons.monetization_on,
@@ -568,7 +582,13 @@ class _OnboardScreenState extends State<OnboardScreen> {
                                             isHover9 = val;
                                           });
                                         },
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const MarketPlace()));
+                                        },
                                         text: 'HERE',
                                         icon: Icon(
                                           Icons.store_mall_directory,

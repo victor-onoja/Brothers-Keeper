@@ -58,5 +58,10 @@ class AppTheme {
           fontWeight: FontWeight.bold,
           color: colorScheme.onBackground,
         ),
+        subtitle2: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+          color: colorScheme.secondary,
+        ),
       );
 }
