@@ -4,7 +4,7 @@ pragma solidity ^0.8.12;
 
 
 import "@openzeppelin4.8.0/contracts/token/ERC721/extensions/ERC721Votes.sol";
-import "@openzeppelin4.8.0/contracts/ownership/Ownable.sol";
+import "@openzeppelin4.8.0/contracts/access/Ownable.sol";
 
 
 contract BrothersKeeperNFT is ERC721Votes, Ownable {
@@ -25,18 +25,18 @@ contract BrothersKeeperNFT is ERC721Votes, Ownable {
     }
 
     function setBaseUri(string newUri) external onlyOwner() {
-        _baseURIstring = newUri
+        _baseURIstring = newUri;
     }
 
     function mint() public payable {
         require(msg.value >= tokenPrice * 1 ether, "Insufficient funds to mint Token");
         _mint(msg.sender, tokenId);
-        tokenId += 1
+        tokenId += 1;
     }
 
     function governorMint(address destination) public onlyOwner {
         _mint(destination, tokenId);
-        tokenId += 1
+        tokenId += 1;
     }
 
     function _sendCoin(address payable recipient, uint amount) private {
