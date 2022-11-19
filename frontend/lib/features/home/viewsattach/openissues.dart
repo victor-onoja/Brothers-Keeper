@@ -15,6 +15,7 @@ class OpenIssues extends StatefulWidget {
 
 class _OpenIssuesState extends State<OpenIssues> {
   bool isHover5 = false;
+  bool isHover = false;
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -202,6 +203,17 @@ class _OpenIssuesState extends State<OpenIssues> {
                             'Opened Issues',
                             style: Theme.of(context).textTheme.headline5,
                             textAlign: TextAlign.center,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.25,
+                          ),
+                          IconButton(
+                            tooltip: 'filter',
+                            icon: const Icon(
+                              Icons.filter_alt,
+                              color: AppColors.green,
+                            ),
+                            onPressed: () {},
                           )
                         ],
                       ),
@@ -213,10 +225,94 @@ class _OpenIssuesState extends State<OpenIssues> {
                             SizedBox(
                               height: MediaQuery.of(context).size.height * 0.05,
                             ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(28, 0, 0, 10),
+                              child: InkWell(
+                                onTap: () {},
+                                child: ListTile(
+                                  selectedTileColor: AppColors.bgcolor.shade400,
+                                  leading: Icon(
+                                    Icons.star_border_rounded,
+                                    color: AppColors.green.shade100,
+                                  ),
+                                  title: Container(
+                                      child: Text(
+                                    'How to, How to, How to',
+                                    style:
+                                        Theme.of(context).textTheme.subtitle2,
+                                    textAlign: TextAlign.start,
+                                  )),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(28, 0, 0, 10),
+                              child: InkWell(
+                                onTap: () {},
+                                child: ListTile(
+                                  selectedTileColor: AppColors.bgcolor.shade400,
+                                  leading: Icon(
+                                    Icons.star_border_rounded,
+                                    color: AppColors.green.shade100,
+                                  ),
+                                  title: Container(
+                                      child: Text(
+                                    'How to, How to, How to',
+                                    style:
+                                        Theme.of(context).textTheme.subtitle2,
+                                    textAlign: TextAlign.start,
+                                  )),
+                                ),
+                              ),
+                            )
                           ],
                         )
                       : Column(
-                          children: [],
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.05,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(28, 0, 0, 10),
+                              child: InkWell(
+                                onTap: () {},
+                                child: ListTile(
+                                  selectedTileColor: AppColors.bgcolor.shade400,
+                                  leading: Icon(
+                                    Icons.star_border_rounded,
+                                    color: AppColors.green.shade100,
+                                  ),
+                                  title: Container(
+                                      child: Text(
+                                    'How to, How to, How to',
+                                    style:
+                                        Theme.of(context).textTheme.subtitle2,
+                                    textAlign: TextAlign.start,
+                                  )),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(28, 0, 0, 10),
+                              child: InkWell(
+                                onTap: () {},
+                                child: ListTile(
+                                  selectedTileColor: AppColors.bgcolor.shade400,
+                                  leading: Icon(
+                                    Icons.star_border_rounded,
+                                    color: AppColors.green.shade100,
+                                  ),
+                                  title: Container(
+                                      child: Text(
+                                    'How to, How to, How to',
+                                    style:
+                                        Theme.of(context).textTheme.subtitle2,
+                                    textAlign: TextAlign.start,
+                                  )),
+                                ),
+                              ),
+                            )
+                          ],
                         ),
                 ],
               ),
