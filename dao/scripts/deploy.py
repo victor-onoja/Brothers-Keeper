@@ -1,5 +1,7 @@
-from brownie import accounts
+from brownie import accounts, BrothersKeeperNFT, NFTMarketPlace
+import os
 
+account = accounts.load(os.getenv("BEACON"))
 
 def deployGovernor():
     pass
@@ -10,15 +12,24 @@ def deployTimelock():
 
 
 def deployBrothersKeeperNFT():
-    pass
+    BrothersKeeperNFT.deploy(
+        0.5e18,
+        {'from': account}
+        )
 
 
 def deployMarketPlace():
-    pass
+    NFTMarketPlace.deploy(
+        2,
+        'BrothersKeeperMarketPlace',
+        '0x4b48841d4b32C4650E4ABc117A03FE8B51f38F68',
+        {'from': account}
+        )
 
 
 def main():
-    deployGovernor()
-    deployTimelock()
+    # deployGovernor()
+    # deployTimelock()
     deployBrothersKeeperNFT()
     deployMarketPlace()
+

@@ -46,21 +46,20 @@ contract MarketPlace is ERC721Holder, Ownable {
         Sold,
         Cancelled
     }
-    
+
     struct Listing {
         ListingStatus status;
         address seller;
         address token;
         uint tokenId;
-        uint listingId;
         uint price;
     }
 
     uint16 immutable _feeNumerator; // divides by 1000 to get the percentage
     ITablelandTables immutable _tableland;
-    uint16 constant _feeDenominator = 1000;
+    uint16 constant _feeDenominator = 100;
     string public _prefix;
-    uint private _listingId;
+    uint private _listingId = 1;
     uint public _tableId;
 
     mapping (uint => Listing) private _listings;
@@ -73,7 +72,7 @@ contract MarketPlace is ERC721Holder, Ownable {
             address(this),
             string.concat(
                 "CREATE TABLE ",
-                prefix,
+                _prefix,
                 "_",
                 Strings.toString(block.chainid),
                 " (listingId integer primary key, seller text, token text, tokenId integer, price integer, status integer);"
@@ -94,7 +93,6 @@ contract MarketPlace is ERC721Holder, Ownable {
             msg.sender,
             token,
             tokenId,
-            _listingId,
             price
         );
         _listings[_listingId] = listing;
@@ -103,19 +101,37 @@ contract MarketPlace is ERC721Holder, Ownable {
             address(this),
             _tableId,
             string.concat(
-
+                "INSERT INTO ",
+                _prefix,
+                "_",
+                Strings.toString(block.chainid),
+                string.concat(
+                    " VALUES (",
+                    Strings.toString(_listingId),
+                    ", ",
+                    Strings.toHexString(uint160(msg.sender), 20),
+                    ", ",
+                    Strings.toHexString(uint160(token), 20),
+                    ", ",
+                    Strings.toString(tokenId),
+                    ", ",
+                    Strings.toString(price),
+                    ", ",
+                    Strings.toString(uint8(ListingStatus.Active)),
+                    ");"
+                )
             ));
 
         _listingId ++;
-        emit Listed (msg.sender, listing.listingId, token, tokenId, price);
+        emit Listed (msg.sender, _listingId, token, tokenId, price);
 
     }
 
-    function cancelListing(uint listingId) private {
+    function cancelListing(uint listingId) external {
         Listing memory listing = _listings[listingId];
 
-        require();
-        require(msg.sender != listing.seller,
+        require(listing.seller != address(0), "Token is not listed yet");
+        require(msg.sender == listing.seller,
             "Only seller can cancel listing");
         require(listing.status == ListingStatus.Cancelled, 
             "Listing is not active");
@@ -129,12 +145,19 @@ contract MarketPlace is ERC721Holder, Ownable {
             address(this),
             _tableId,
             string.concat(
-
+                "UPDATE ",
+                _prefix,
+                "_",
+                Strings.toString(block.chainid),
+                "SET status = '",
+                Strings.toString(uint(listing.status)),
+                "' WHERE seller = ",
+                Strings.toHexString(uint160(msg.sender), 20)
             ));
 
         delete(_listings[listingId]);
         emit Cancelled (listing.seller,
-                        listing.listingId,
+                        listingId,
                         listing.token,
                         listing.tokenId);
     }
@@ -142,7 +165,7 @@ contract MarketPlace is ERC721Holder, Ownable {
     function buyToken(uint listingId) external payable {
         
         Listing memory listing = _listings[listingId];
-        require();
+        require(listing.seller != address(0), "Token is not listed yet");
         require(msg.sender != listing.seller, "seller cannot be Buyer");
         require(listing.status == ListingStatus.Active, 
             "Listing is not Active");
@@ -160,12 +183,17 @@ contract MarketPlace is ERC721Holder, Ownable {
             address(this),
             _tableId,
             string.concat(
-
+                "DELETE FROM",
+                _prefix,
+                "_",
+                Strings.toString(block.chainid),
+                " WHERE listingId = ",
+                Strings.toString(listingId)
             ));
 
         emit Sold (
             msg.sender,
-            listing.listingId,
+            listingId,
             listing.token,
             listing.tokenId,
             listing.price

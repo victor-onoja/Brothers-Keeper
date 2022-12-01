@@ -4,6 +4,7 @@ pragma solidity ^0.8.12;
 
 
 import "@openzeppelin4.8.0/contracts/token/ERC721/extensions/ERC721Votes.sol";
+import "@openzeppelin4.8.0/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin4.8.0/contracts/access/Ownable.sol";
 import "../interfaces/IBrothersKeeperNFT.sol";
 
@@ -61,4 +62,14 @@ contract BrothersKeeperNFT is
         _sendCoin(recipient,amount);
     }
 
+    function _sendERC20Token(address tokenAdd, address reciepient, uint amount) private {
+        IERC20(tokenAdd).transfer(reciepient, amount);
+        emit transferSent(tokenAdd, reciepient);
+    }
+    function sendERC20Token(
+        address tokenAdd, address reciepient, uint amount) external onlyOwner() {
+        require(IERC20(tokenAdd).balanceOf(address(this)) >= amount,
+            "Insufficient Funds");
+        _sendERC20Token(tokenAdd,reciepient,amount);
+    }
 }
