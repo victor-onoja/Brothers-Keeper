@@ -40,9 +40,9 @@ contract BrothersKeeperNFT is
         _baseURIstring = newUri;
     }
 
-    function mint() public payable {
+    function mint(address reciepient) public payable {
         require(msg.value >= tokenPrice * 1 ether, "Insufficient funds to mint Token");
-        _mint(msg.sender, tokenId);
+        _mint(reciepient, tokenId);
         tokenId += 1;
     }
 

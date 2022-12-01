@@ -55,7 +55,7 @@ contract MarketPlace is ERC721Holder, Ownable {
         uint price;
     }
 
-    uint16 immutable _feeNumerator; // divides by 1000 to get the percentage
+    uint16 immutable _feeNumerator; // divides by 100 to get the percentage
     ITablelandTables immutable _tableland;
     uint16 constant _feeDenominator = 100;
     string public _prefix;
@@ -145,14 +145,12 @@ contract MarketPlace is ERC721Holder, Ownable {
             address(this),
             _tableId,
             string.concat(
-                "UPDATE ",
+                "DELETE FROM",
                 _prefix,
                 "_",
                 Strings.toString(block.chainid),
-                "SET status = '",
-                Strings.toString(uint(listing.status)),
-                "' WHERE seller = ",
-                Strings.toHexString(uint160(msg.sender), 20)
+                " WHERE listingId = ",
+                Strings.toString(listingId)
             ));
 
         delete(_listings[listingId]);
@@ -183,12 +181,14 @@ contract MarketPlace is ERC721Holder, Ownable {
             address(this),
             _tableId,
             string.concat(
-                "DELETE FROM",
+                "UPDATE ",
                 _prefix,
                 "_",
                 Strings.toString(block.chainid),
-                " WHERE listingId = ",
-                Strings.toString(listingId)
+                "SET status = ",
+                Strings.toString(uint(ListingStatus.Sold)),
+                " WHERE seller = ",
+                Strings.toHexString(uint160(msg.sender), 20)
             ));
 
         emit Sold (
