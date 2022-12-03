@@ -4,21 +4,13 @@ pragma solidity ^0.8.12;
 
 
 import "@openzeppelin4.8.0/contracts/token/ERC721/extensions/ERC721Votes.sol";
-import "@openzeppelin4.8.0/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin4.8.0/contracts/access/Ownable.sol";
-import "../interfaces/IBrothersKeeperNFT.sol";
+import "contracts/Transfer.sol";
 
 
 contract BrothersKeeperNFT is 
-    IBrothersKeeperNFT,
-    ERC721Votes,
-    Ownable 
+    Transfer,
+    ERC721Votes
     {
-    
-    event transferSent (
-        address sender,
-        address reciepient
-    );
 
     uint private tokenId;
     string private _baseURIstring;
@@ -49,27 +41,5 @@ contract BrothersKeeperNFT is
     function governorMint(address destination) public onlyOwner {
         _mint(destination, tokenId);
         tokenId += 1;
-    }
-
-    function _sendCoin(address payable recipient, uint amount) private {
-        (bool success, ) = recipient.call{value: amount}("");
-        require (success, "Transfer Failed.");
-        emit transferSent(address(0),recipient);
-    }
-    
-    function sendCoin(address payable recipient, uint amount) external onlyOwner() {
-        require(address(this).balance >= amount, "Insufficient funds");
-        _sendCoin(recipient,amount);
-    }
-
-    function _sendERC20Token(address tokenAdd, address reciepient, uint amount) private {
-        IERC20(tokenAdd).transfer(reciepient, amount);
-        emit transferSent(tokenAdd, reciepient);
-    }
-    function sendERC20Token(
-        address tokenAdd, address reciepient, uint amount) external onlyOwner() {
-        require(IERC20(tokenAdd).balanceOf(address(this)) >= amount,
-            "Insufficient Funds");
-        _sendERC20Token(tokenAdd,reciepient,amount);
     }
 }

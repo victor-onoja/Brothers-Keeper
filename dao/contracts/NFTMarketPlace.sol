@@ -2,16 +2,15 @@
 
 pragma solidity ^0.8.12;
 
-import "@openzeppelin4.8.0/contracts/access/Ownable.sol";
-import "@openzeppelin4.8.0/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin4.8.0/contracts/token/ERC721/IERC721.sol";
+
 import "@openzeppelin4.8.0/contracts/token/ERC721/utils/ERC721Holder.sol";
 import "@openzeppelin4.8.0/contracts/utils/Strings.sol";
+import "contracts/Transfer.sol";
 import "../interfaces/ITablelandTables.sol";
 
 
 
-contract MarketPlace is ERC721Holder, Ownable {
+contract MarketPlace is ERC721Holder, Transfer {
 
     event Listed (
         address seller,
@@ -34,11 +33,6 @@ contract MarketPlace is ERC721Holder, Ownable {
         uint listingId,
         address token,
         uint tokenId
-    );
-
-    event transferSent (
-        address sender,
-        address reciepient
     );
 
     enum ListingStatus {
@@ -206,46 +200,6 @@ contract MarketPlace is ERC721Holder, Ownable {
 
     function setPrefix(string calldata prefix) external onlyOwner() {
         _prefix = prefix;
-    }
-
-    function _sendCoin(address payable recipient, uint amount) private {
-        (bool success, ) = recipient.call{value: amount}("");
-        require (success, "Transfer Failed.");
-        emit transferSent(address(this), recipient);
-    }
-    
-    function sendCoin(address payable recipient, uint amount) external onlyOwner() {
-        require(address(this).balance >= amount, "Insufficient funds");
-        _sendCoin(recipient,amount);
-    }
-
-    function _sendERC20Token(address tokenAdd, address reciepient, uint amount) private {
-        IERC20(tokenAdd).transfer(reciepient, amount);
-        emit transferSent(tokenAdd, reciepient);
-    }
-    function sendERC20Token(
-        address tokenAdd, address reciepient, uint amount) external onlyOwner() {
-        require(IERC20(tokenAdd).balanceOf(address(this)) >= amount,
-            "Insufficient Funds");
-        _sendERC20Token(tokenAdd,reciepient,amount);
-    }
-
-    function _sendERC721Token(
-        address tokenAdd,
-        address sender,
-        address reciepient,
-        uint tokenId) private {
-
-        IERC721(tokenAdd).transferFrom(sender, reciepient, tokenId);
-        emit transferSent(tokenAdd, reciepient);
-    }
-    function sendERC721Token(
-        address tokenAdd,
-        address sender,
-        address reciepient,
-        uint tokenId) external onlyOwner() {
-            
-        _sendERC721Token(tokenAdd, sender, reciepient, tokenId);
     }
 
     receive() external payable {
