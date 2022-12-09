@@ -9,7 +9,7 @@ import "@openzeppelin4.8.0/contracts/token/ERC721/IERC721.sol";
 contract Transfer is Ownable {
 
     event transferSent (
-        address sender,
+        address tokenAddress,
         address reciepient
     );
 

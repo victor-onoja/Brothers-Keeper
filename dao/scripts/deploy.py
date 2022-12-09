@@ -8,7 +8,7 @@ from brownie import (
 import os
 
 account = accounts.add(os.getenv("BEACON"))
-blast = "0xC96351bA2E52f81672Dc4f67d94F6D784Ce99d01"
+co_founder = "0xC96351bA2E52f81672Dc4f67d94F6D784Ce99d01"
 tablelandAddress = '0x4b48841d4b32C4650E4ABc117A03FE8B51f38F68'
 
 
@@ -25,9 +25,9 @@ def deployBrothersKeeperNFT():
         0.5,
         {'from': account}
         )
-    BRK.governorMint(blast, {'from': account})
-    BRK.governorMint(blast, {'from': account})
-    BRK.governorMint(blast, {'from': account})
+    BRK.governorMint(co_founder, {'from': account})
+    BRK.governorMint(co_founder, {'from': account})
+    BRK.governorMint(co_founder, {'from': account})
 
 
 def deploytableLand() -> str:
@@ -40,7 +40,7 @@ def deployMarketPlace():
     if network.show_active() == 'development':
         tableland = deploytableLand()
 
-    MarketPlace.deploy(
+    MKP = MarketPlace.deploy(
         2,
         'BrothersKeeperMarketPlace',
         tableland,

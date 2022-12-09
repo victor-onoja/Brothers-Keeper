@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import "../interfaces/ITablelandTables.sol";
-
 
 contract TablelandTables {
     event tableCreated(
@@ -17,6 +15,7 @@ contract TablelandTables {
 
     mapping (uint => address) private tables;
     uint private Id = 0;
+
 
     function createTable (
         address owner,

@@ -35,11 +35,11 @@ contract BrothersKeeperNFT is
     function mint(address reciepient) public payable {
         require(msg.value >= tokenPrice * 1 ether, "Insufficient funds to mint Token");
         _mint(reciepient, tokenId);
-        tokenId += 1;
+        tokenId ++;
     }
 
     function governorMint(address destination) public onlyOwner {
         _mint(destination, tokenId);
-        tokenId += 1;
+        tokenId ++;
     }
 }
