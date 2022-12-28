@@ -4,10 +4,14 @@ pragma solidity ^0.8.12;
 
 
 import "@openzeppelin4.8.0/contracts/token/ERC721/extensions/ERC721Votes.sol";
-import "@openzeppelin4.8.0/contracts/access/Ownable.sol";
+import "contracts/Transfer.sol";
 
 
-contract BrothersKeeperNFT is ERC721Votes, Ownable {
+contract BrothersKeeperNFT is 
+    Transfer,
+    ERC721Votes
+    {
+
     uint private tokenId;
     string private _baseURIstring;
     uint256 private immutable tokenPrice;
@@ -15,8 +19,8 @@ contract BrothersKeeperNFT is ERC721Votes, Ownable {
 
     constructor (uint256 _tokenPrice)
         ERC721 ("BrothersKeeperNFT", "BK")
-        EIP712("BrothersKeeperNFT", "1") {
-
+        EIP712("BrothersKeeperNFT", "1") 
+    {
         tokenPrice = _tokenPrice;
     }
 
@@ -24,30 +28,18 @@ contract BrothersKeeperNFT is ERC721Votes, Ownable {
         return _baseURIstring;
     }
 
-    function setBaseUri(string newUri) external onlyOwner() {
+    function setBaseUri(string calldata newUri) external onlyOwner() {
         _baseURIstring = newUri;
     }
 
-    function mint() public payable {
+    function mint(address reciepient) public payable {
         require(msg.value >= tokenPrice * 1 ether, "Insufficient funds to mint Token");
-        _mint(msg.sender, tokenId);
-        tokenId += 1;
+        _mint(reciepient, tokenId);
+        tokenId ++;
     }
 
     function governorMint(address destination) public onlyOwner {
         _mint(destination, tokenId);
-        tokenId += 1;
+        tokenId ++;
     }
-
-    function _sendCoin(address payable recipient, uint amount) private {
-        (bool success, ) = recipient.call{value: amount}("");
-        require (success, "Transfer Failed.");
-        emit transferSent(address(0),recipient);
-    }
-    
-    function sendCoin(address payable recipient, uint amount) external onlyOwner() {
-        require(address(this).balance >= amount, "Insufficient funds");
-        _sendCoin(recipient,amount);
-    }
-
 }

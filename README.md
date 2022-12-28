@@ -1,3 +1,3 @@
 ## Brother's Keeper Dao
 
-# A gathering of like minded people enriching each others lives
+# A Decentralized Autonomous Organization of like minded people enriching each others lives
