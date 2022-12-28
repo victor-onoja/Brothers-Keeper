@@ -40,12 +40,24 @@ def deployMarketPlace():
     if network.show_active() == 'development':
         tableland = deploytableLand()
 
-    MKP = MarketPlace.deploy(
+    MarketPlace.deploy(
         2,
         'BrothersKeeperMarketPlace',
         tableland,
         {'from': account}
         )
+
+def interactMarketPlace():
+    MKP = MarketPlace[0]
+    create = MKP.createTable({'from': account})
+
+    lit = MKP.listToken({'from': account})
+
+    lit2 = MKP.listToken({'from': account})
+
+    cancel = MKP.cancelListing({'from': account})
+
+    buy = MKP.buyToken({'from': account})
 
 
 def main():
@@ -53,4 +65,5 @@ def main():
     # deployTimelock()
     deployBrothersKeeperNFT()
     deployMarketPlace()
+    interactMarketPlace()
 

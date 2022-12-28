@@ -7,52 +7,11 @@ import "@openzeppelin4.8.0/contracts/token/ERC721/utils/ERC721Holder.sol";
 import "@openzeppelin4.8.0/contracts/utils/Strings.sol";
 import "contracts/Transfer.sol";
 import "../interfaces/ITablelandTables.sol";
+import "../interfaces/IMarketPlace.sol";
 
 
 
-contract MarketPlace is ERC721Holder, Transfer {
-
-    event CreatedTable (
-        address owner,
-        string statement
-    );
-
-    event Listed (
-        address seller,
-        uint listingId,
-        address token,
-        uint tokenId,
-        uint price
-    );
-
-    event Sold (
-        address buyer,
-        uint listingId,
-        address token,
-        uint tokenId,
-        uint price
-    );
-
-    event Cancelled (
-        address seller,
-        uint listingId,
-        address token,
-        uint tokenId
-    );
-
-    enum ListingStatus {
-        Active,
-        Sold,
-        Cancelled
-    }
-
-    struct Listing {
-        ListingStatus status;
-        address seller;
-        address token;
-        uint tokenId;
-        uint price;
-    }
+contract MarketPlace is IMarketPlace, ERC721Holder, Transfer {
 
     uint16 immutable _feeNumerator; // divides by 100 to get the percentage
     ITablelandTables immutable _tableland;
@@ -63,11 +22,11 @@ contract MarketPlace is ERC721Holder, Transfer {
 
     mapping (uint => Listing) private _listings;
 
-    constructor (uint8 fee, string calldata prefix, address registry) {
+    constructor (uint8 fee, string memory prefix, address registry) {
         _feeNumerator = fee;
         _prefix = prefix;
         _tableland = ITablelandTables(registry);
-        statement = string.concat(
+        string memory statement = string.concat(
                 "CREATE TABLE ",
                 _prefix,
                 "_",
@@ -78,13 +37,13 @@ contract MarketPlace is ERC721Holder, Transfer {
         emit CreatedTable(address(this), statement);
     }
 
-    function _create (address caller, string calldata statement) 
+    function _create (address caller, string memory statement) 
         private returns (uint tableId) {
 
         tableId = _tableland.createTable(caller, statement);
     }
 
-    function _run (address caller, uint256 tableId, string calldata statement) private {
+    function _run (address caller, uint256 tableId, string memory statement) private {
         _tableland.runSQL(caller, tableId, statement);
     }
 
@@ -202,27 +161,28 @@ contract MarketPlace is ERC721Holder, Transfer {
         );
     }
 
-    function createTable (uint tableId, string calldata prefix) external onlyOwner() {
-        require(prefix != _prefix, "The prefix is the same as the existing");
-        _setPrefix(prefix);
-        statement = string.concat(
-                "CREATE TABLE ",
-                _prefix,
-                "_",
-                Strings.toString(block.chainid),
-                " (listingId integer primary key, seller text, token text, tokenId integer, price integer, status integer);"
-            );
+    function createTable (uint tableId, string memory prefix) external onlyOwner() {
+        require(keccak256(bytes(prefix)) == keccak256(bytes(_prefix)), 
+            "The prefix is the same as the existing");
+        _prefix = prefix;
+        string memory statement = string.concat(
+            "CREATE TABLE ",
+            _prefix,
+            "_",
+            Strings.toString(block.chainid),
+            " (listingId integer primary key, seller text, token text, tokenId integer, price integer, status integer);"
+        );
         _tableId = _create(address(this), statement);
         emit CreatedTable(address(this), statement);
     }
 
-    function setPrefix (string calldata prefix) external onlyOwner() {
-        _setPrefix(prefix);
-    }
+    function buildCreateQuery () {}
 
-    function _setPrefix (string calldata prefix) private {
-        _prefix = prefix;
-    }
+    function buildUpdateQuery () {}
+
+    function buildDeleteQuery () {}
+
+    function buildInsertQuery () {}
 
     receive() external payable {
     }
