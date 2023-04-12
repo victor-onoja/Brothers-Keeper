@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +18,21 @@ class MPH extends StatefulWidget {
 class _MPHState extends State<MPH> {
   // List<String> NFTs = [];
   bool isHover5 = false;
+  bool isClicked = false;
+  String constructionSignEmoji = '\u{1F6A7}';
+
+  void _showText() {
+    setState(() {
+      isClicked = true;
+    });
+
+    Timer(const Duration(seconds: 4), () {
+      setState(() {
+        isClicked = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -273,7 +290,9 @@ class _MPHState extends State<MPH> {
                                               padding:
                                                   const EdgeInsets.all(18.0),
                                               child: ElevatedButton.icon(
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  _showText();
+                                                },
                                                 icon: Icon(
                                                   Icons.monetization_on,
                                                   color: AppColors
@@ -291,7 +310,13 @@ class _MPHState extends State<MPH> {
                                                             .all(AppColors.green
                                                                 .shade100)),
                                               ),
-                                            )
+                                            ),
+                                            if (isClicked)
+                                              Text(
+                                                constructionSignEmoji,
+                                                style: const TextStyle(
+                                                    color: Colors.orange),
+                                              ),
                                           ],
                                         )
                                       ],
